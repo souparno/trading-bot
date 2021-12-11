@@ -20,39 +20,21 @@ import pandas as pd
 
 
 API_URL = 'https://api.wazirx.com/api/v2/'
-FILE = "data.csv"
 
-def wazirt():
-
-    head=["date", "buy", "sell", "low", "high", "last", "vol"] 
-    print(head,file=open(FILE,"a"))
-
+def wazirt(symbol, callback, target, check_against):
     at = ''
-
     while 1 :
-        x=requests.get(API_URL+"tickers/btcinr")
-        a=x.content
         try:
-            b=json.loads(a)
+            response = requests.get(API_URL+"tickers/" + symbol)
+            b=json.loads(response.content)
         except:
             continue
 
         if(at != b['at']):
             ticker = b['ticker']
-            row=[str(datetime.fromtimestamp(b['at'])), ticker['buy'], ticker['sell'], ticker['low'], ticker['high'], ticker['last'], ticker['vol']]
-
-            print(row,file=open(FILE,"a"))
+            callback(target, ticker["last"], check_against)
 
         at = b['at']
 
 
-y = threading.Thread(target=wazirt)
-y.daemon=True
-y.start()
-
-print("before while")
-while input()!="stop":
-    continue
-driver.close()
-sys.exit()
 
