@@ -28,33 +28,40 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 
-from ticker import wazirt
+from ticker import coindcx
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 driver.get("https://web.whatsapp.com/") 
 wait = WebDriverWait(driver, 600)
 
-def texting(target, last, check_against):         # Whatsapp Text Code
-    x_arg = "//span[contains(@title, '"+ target +"') and text()='"+target+"']"
-    group_title = wait.until(EC.visibility_of_element_located((By.XPATH, x_arg)))
-    group_title.click() 
+class Notify():
+    def __init__(self, price, target):
+        self.price = price
+        self.target = target
 
-    inp_xpath = "//div[contains(@title, 'Type a message')]"
-    input_box = wait.until(EC.visibility_of_element_located((By.XPATH, inp_xpath)))
+    def texting(self, last_price):         # Whatsapp Text Code
+        x_arg = "//span[contains(@title, '"+ self.target +"') and text()='" + self.target + "']"
+        group_title = wait.until(EC.visibility_of_element_located((By.XPATH, x_arg)))
+        group_title.click() 
 
-    # string = str(arg)
-    if float(last) <= check_against:
-        input_box.send_keys(last + Keys.ENTER) 
-        input_box.send_keys("check the bid, seems like the price git accepted" + Keys.ENTER)
+        inp_xpath = "//div[contains(@title, 'Type a message')]"
+        input_box = wait.until(EC.visibility_of_element_located((By.XPATH, inp_xpath)))
+
+        # string = str(arg)
+        if float(last_price) >= self.price:
+            input_box.send_keys(last + Keys.ENTER) 
+            input_box.send_keys("you made some profit !!!" + Keys.ENTER)
 
 
 
-y = threading.Thread(target=wazirt, args=["btcinr", texting, "Souparno Majumder", 3834491])
+notify = Notify(3980000, "Souparno Majumder")
+
+y = threading.Thread(target=coindcx, args=["BTCINR", notify.texting])
 y.daemon=True
 y.start()
 
 while input()!="stop":
     continue
 
-# driver.close()
+driver.close()
 sys.exit()

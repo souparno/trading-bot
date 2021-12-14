@@ -1,40 +1,26 @@
 import requests
-import random
-import json
-import hashlib
-import hmac
-import urllib
-import uuid
-import time as t
-import copy
-import math
-import sys
-from datetime import datetime
-import calendar
-import os
-from requests_toolbelt import MultipartEncoder
-from time import sleep
-import os.path
-import threading
 import pandas as pd
 
+API_URL = "https://api.coindcx.com/"
 
-API_URL = 'https://api.wazirx.com/api/v2/'
+response = requests.get(API_URL + "exchange/ticker")
 
-def wazirt(symbol, callback, target, check_against):
-    at = ''
+def coindcx(symbol, callback):
+    _timestamp = ''
+
     while 1 :
         try:
-            response = requests.get(API_URL+"tickers/" + symbol)
-            b=json.loads(response.content)
+            df = pd.DataFrame(response.json())
+            df = df.where(df["market"]==symbol).dropna()
+
         except:
             continue
 
-        if(at != b['at']):
-            ticker = b['ticker']
-            callback(target, ticker["last"], check_against)
+        timestamp = df["timestamp"][0]
 
-        at = b['at']
+        if(_timestamp != timestamp):
+            _timestamp = timestamp
+            callback(df['last_price'][0])
 
 
 
