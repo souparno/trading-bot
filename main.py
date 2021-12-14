@@ -30,9 +30,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from ticker import coindcx
 
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-driver.get("https://web.whatsapp.com/") 
-wait = WebDriverWait(driver, 600)
+# driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+# driver.get("https://web.whatsapp.com/") 
+# wait = WebDriverWait(driver, 600)
 
 class Notify():
     def __init__(self, price, target):
@@ -48,9 +48,9 @@ class Notify():
         input_box = wait.until(EC.visibility_of_element_located((By.XPATH, inp_xpath)))
 
         # string = str(arg)
-        if float(last_price) >= self.price:
-            input_box.send_keys(last + Keys.ENTER) 
-            input_box.send_keys("you made some profit !!!" + Keys.ENTER)
+        # if float(last_price) >= self.price:
+        input_box.send_keys(last_price + Keys.ENTER) 
+        input_box.send_keys("you made some profit !!!" + Keys.ENTER)
 
 
 
